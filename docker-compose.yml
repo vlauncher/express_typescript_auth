@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: express_typescript_auth
+    restart: always
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env

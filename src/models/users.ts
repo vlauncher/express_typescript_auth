@@ -1,81 +1,51 @@
-import { DataTypes, Model } from 'sequelize';
-import  sequelize  from '../config/database';
-import * as bcrypt from 'bcryptjs';
+import mongoose, { Document, Schema } from "mongoose";
+import bcrypt from "bcryptjs";
 
-export enum UserRole {
-  ADMIN = 'admin',
-  REGULAR = 'regular',
-  STAFF = 'staff',
+interface IUser extends Document {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    isVerified: boolean;
+    matchPassword: (enteredPassword: string) => Promise<boolean>;
 }
 
-interface UserAttributes {
-  id?: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-  role: UserRole;
-  isVerified?: boolean;
-}
-
-class User extends Model<UserAttributes> implements UserAttributes {
-  public id!: number;
-  public first_name!: string;
-  public last_name!: string;
-  public email!: string;
-  public password!: string;
-  public role!: UserRole;
-  public isVerified!: boolean;
-
-  public async comparePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
-  }
-}
-
-User.init(
-  {
-    id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true,
+const UserSchema: Schema = new mongoose.Schema({
+    firstName: {
+        type: String,
+        required: true
     },
-    first_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    last_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    lastName: {
+        type: String,
+        required: true
     },
     email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+        type: String,
+        required: true,
+        unique: true
     },
     password: {
-      type: DataTypes.STRING,
-      allowNull: false,
+        type: String,
+        required: true
     },
     isVerified: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
-    },
-    role: {
-      type: DataTypes.ENUM(...Object.values(UserRole)),
-      allowNull: false,
-    },
-  },
-  {
-    tableName: 'users',
-    sequelize,
-    hooks: {
-      beforeCreate: async (user: User) => {
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
-      },
-    },
-  }
-);
+        type: Boolean,
+        default: false
+    }
+});
 
-export { User };
+UserSchema.pre<IUser>("save", async function (next) {
+    if (!this.isModified("password")) {
+        next();
+    }
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+});
+
+UserSchema.methods.matchPassword = async function (this: IUser, enteredPassword: string): Promise<boolean> {
+    return await bcrypt.compare(enteredPassword, this.password);
+}
+
+const User = mongoose.model<IUser>("User", UserSchema);
+
+export default User;
