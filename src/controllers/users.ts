@@ -6,8 +6,8 @@ import { sendVerificationEmail, sendPasswordResetEmail, sendEmailConfirmationSuc
 
 // Register User
 export const register = async (req: Request, res: Response) => {
-    const { firstName, lastName, email, password } = req.body;
-    if (!firstName || !lastName || !email || !password) {
+    const { first_name, last_name, email, password } = req.body;
+    if (!first_name || !last_name || !email || !password) {
         return res.status(400).json({ message: "All fields are required" });
     }
     const user = await User.findOne({ email });
@@ -15,8 +15,8 @@ export const register = async (req: Request, res: Response) => {
         return res.status(400).json({ message: "User already exists" });
     }
     const newUser = new User({
-        firstName,
-        lastName,
+        first_name,
+        last_name,
         email,
         password
     });

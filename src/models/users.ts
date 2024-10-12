@@ -11,11 +11,11 @@ interface IUser extends Document {
 }
 
 const UserSchema: Schema = new mongoose.Schema({
-    firstName: {
+    first_name: {
         type: String,
         required: true
     },
-    lastName: {
+    last_name: {
         type: String,
         required: true
     },
