@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/users";
+import Profile from "../models/profile";
 import { createToken, verifyToken } from "../utils/tokens";
 import { sendVerificationEmail, sendPasswordResetEmail, sendEmailConfirmationSuccess, sendPasswordResetSuccess,sendPasswordChangedSuccess } from "../utils/emails";
 
@@ -141,3 +142,36 @@ interface UserRequest extends Request {
          return res.status(500).json({ message: "Internal server error" });
      }
  };
+
+
+// Get User Profile
+export const getProfile = async (req: UserRequest, res: Response) => {
+    const user = await User.findById(req.user.id);
+    console.log(user);
+    if (!user) {
+        return res.status(400).json({ message: "User not found" });
+    }
+    const profile = await Profile.findOne({ user: user._id });
+    if (!profile) {
+        return res.status(400).json({ message: "Profile not found" });
+    }
+    return res.status(200).json({ profile });
+}
+
+// Update User Profile
+export const updateProfile = async (req: UserRequest, res: Response) => {
+    const { bio, phone_number, address } = req.body;
+    const user = await User.findById(req.user.id);
+    if (!user) {
+        return res.status(400).json({ message: "User not found" });
+    }
+    const profile = await Profile.findOne({ user: user._id });
+    if (!profile) {
+        return res.status(400).json({ message: "Profile not found" });
+    }
+    profile.bio = bio;
+    profile.phone_number = phone_number;
+    profile.address = address;
+    await profile.save();
+    return res.status(200).json({ message: "Profile updated successfully" });
+}

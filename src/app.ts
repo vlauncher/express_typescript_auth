@@ -19,7 +19,7 @@ connectDB();
 
 // Routes
 import users from "./routes/users";
-app.use("/auth", users);
+app.use("/api/v1/auth", users);
 
 const PORT = process.env.PORT || 8000;
 

@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import Profile from "./profile";
 import bcrypt from "bcryptjs";
 
 interface IUser extends Document {
@@ -45,6 +46,13 @@ UserSchema.pre<IUser>("save", async function (next) {
 UserSchema.methods.matchPassword = async function (this: IUser, enteredPassword: string): Promise<boolean> {
     return await bcrypt.compare(enteredPassword, this.password);
 }
+
+UserSchema.post<IUser>("save", async function (this: IUser) {
+    const profile = new Profile({ user: this._id });
+    await profile.save();
+})
+
+
 
 const User = mongoose.model<IUser>("User", UserSchema);
 
