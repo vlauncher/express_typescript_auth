@@ -5,7 +5,7 @@ import compression from 'compression'
 import dotenv from 'dotenv'
 import { errorHandler } from './middlewares/errorHandler'
 import { connectDB } from './config/db'
-import { enforceHttps } from './middlewares/security.middleware';
+
 import rateLimit from 'express-rate-limit';
 import cookieSession from 'cookie-session';
 
@@ -20,7 +20,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
-app.use(enforceHttps);
 app.use(helmet())
 app.use(compression())
 
