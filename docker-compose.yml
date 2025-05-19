@@ -4,14 +4,6 @@ services:
     build: .
     ports:
       - "8000:8000"
-    environment:
-      - PORT=8000
-      - MONGO_URI=mongodb+srv://v2dent:Chelsea24462!@v2cruxdb.iusugdb.mongodb.net/express-typescript-auth?retryWrites=true&w=majority
-      - JWT_SECRET=$(openssl rand -hex 32)
-      - NODE_ENV=development
-      - JWT_SECRET_REFRESH=$(openssl rand -hex 32)
-      - EMAIL_USER=v2django@gmail.com
-      - EMAIL_PASS=jmotxzuqgqxlkmlj
     env_file:
       - .env
     volumes:
