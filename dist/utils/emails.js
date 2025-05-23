@@ -42,7 +42,7 @@ class EmailService {
     sendEmailVerification(to, token) {
         return __awaiter(this, void 0, void 0, function* () {
             const subject = "Email Verification";
-            const text = `Please verify your email by clicking the link: http://localhost:8000/api/v1/auth/verify/${token}`;
+            const text = `Please verify your email by clicking the link: http://localhost:3000/auth/verify?token=${token}`;
             return yield this.sendEmail(to, subject, text);
         });
     }
@@ -56,7 +56,7 @@ class EmailService {
     sendPasswordReset(to, token) {
         return __awaiter(this, void 0, void 0, function* () {
             const subject = "Password Reset";
-            const text = `Please reset your password by clicking the link: http://localhost:8000/api/v1/auth/reset-password/${token}`;
+            const text = `Please reset your password by clicking the link: http://localhost:3000/auth/reset-password?token=${token}`;
             return yield this.sendEmail(to, subject, text);
         });
     }

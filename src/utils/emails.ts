@@ -29,7 +29,7 @@ class EmailService {
 
     public async sendEmailVerification(to: string, token: string) {
         const subject = "Email Verification";
-        const text = `Please verify your email by clicking the link: http://localhost:8000/api/v1/auth/verify/${token}`;
+        const text = `Please verify your email by clicking the link: http://localhost:3000/auth/verify?token=${token}`;
         return await this.sendEmail(to, subject, text);
     }
 
@@ -41,7 +41,7 @@ class EmailService {
 
     public async sendPasswordReset(to: string, token: string) {
         const subject = "Password Reset";
-        const text = `Please reset your password by clicking the link: http://localhost:8000/api/v1/auth/reset-password/${token}`;
+        const text = `Please reset your password by clicking the link: http://localhost:3000/auth/reset-password?token=${token}`;
         return await this.sendEmail(to, subject, text);
     }
 
